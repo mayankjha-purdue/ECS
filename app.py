@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import requests
 import pandas as pd
+import os
 
 URL = os.environ['URL']
 
