@@ -3,20 +3,16 @@ import json
 import requests
 import pandas as pd
 
-URL = "https://mgmt590-api-xiicktdcsq-uc.a.run.app/models"
+URL = os.environ['URL']
 
 st.sidebar.title("Functionalities")
-# answer = st.sidebar.button('Answer Question')
-# add = st.sidebar.button('Add Models')
-# delete = st.sidebar.button('Delete Models')
-# upload = st.sidebar.button('Upload a file')
 
 myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Question', 'View Models'))
 
 if myrad == 'View Models':
     st.title('Existing Models')
     headers = {'Content-Type': 'application/json'}
-    response = requests.request('GET', URL, headers=headers)
+    response = requests.request('GET', URL+'/models', headers=headers)
     res_json = response.json()
     model= []
     name= []
@@ -48,7 +44,7 @@ if myrad == 'Add Model':
         })
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.request('PUT', URL, headers=headers, data=payload)
+        response = requests.request('PUT', URL+'/models', headers=headers, data=payload)
         res_json = response.json()
 
         model = []
@@ -76,7 +72,7 @@ if myrad == 'Delete Model':
 
     if st.button('Delete'):
 
-        response = requests.delete('https://mgmt590-api-xiicktdcsq-uc.a.run.app/models', params={'model': model})
+        response = requests.delete(URL+'/models', params={'model': model})
         res_json = response.json()
         model = []
         name = []
@@ -98,8 +94,6 @@ if myrad == 'Delete Model':
 
 if myrad== 'Answer Question' :
 
-    URL2 = "https://mgmt590-api-xiicktdcsq-uc.a.run.app/answer"
-
     st.title('Upload/Question-Answering API')
 
     question = st.text_input('Question')
@@ -119,7 +113,7 @@ if myrad== 'Answer Question' :
 
         if st.button('Answer Question'):
             headers = {'Content-Type': 'application/json'}
-            response = requests.post(URL2, headers=headers,
+            response = requests.post(URL+'/answer', headers=headers,
                                      data=json.dumps({'question': question_2, 'context': context_2, 'model': model_2}))
             answer_final = []
             answer_final.append(response.json()['answer'])
@@ -149,7 +143,7 @@ if myrad== 'Answer Question' :
 
             })
             headers = {'Content-Type': 'application/json'}
-            get_models = requests.request('GET', URL, headers=headers)
+            get_models = requests.request('GET', URL+'/answer', headers=headers)
             res_json = get_models.json()
             model_li = []
 
@@ -186,7 +180,7 @@ if myrad== 'Answer Question' :
                     'context': context})
 
                 headers = {'Content-Type': 'application/json'}
-                response = requests.post(URL2, headers=headers, params={'model': model3}, data=payload)
+                response = requests.post(URL+'/answer', headers=headers, params={'model': model3}, data=payload)
 
                 answer_final = []
                 answer_final.append(response.json()['answer'])
