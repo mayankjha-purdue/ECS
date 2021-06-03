@@ -5,7 +5,9 @@ import pandas as pd
 import os
 
 URL = os.environ.get("URL")
-# URL='https://assignment3-7kfwjamufq-uc.a.run.app'
+
+URL1=URL+"/models"
+URL2=URL+"/answer"
 st.sidebar.title("Functionalities")
 
 myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Question', 'View Models'))
@@ -13,7 +15,7 @@ myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Q
 if myrad == 'View Models':
     st.title('Existing Models')
     headers = {'Content-Type': 'application/json'}
-    response = requests.request('GET', URL+"/models", headers=headers)
+    response = requests.request('GET', URL1, headers=headers)
     res_json = response.json()
     model= []
     name= []
@@ -45,7 +47,7 @@ if myrad == 'Add Model':
         })
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.request('PUT', URL+"/models", headers=headers, data=payload)
+        response = requests.request('PUT', URL1, headers=headers, data=payload)
         res_json = response.json()
 
         model = []
@@ -73,7 +75,7 @@ if myrad == 'Delete Model':
 
     if st.button('Delete'):
 
-        response = requests.delete(URL+"/models", params={'model': model})
+        response = requests.delete(URL1, params={'model': model})
         res_json = response.json()
         model = []
         name = []
@@ -114,7 +116,7 @@ if myrad== 'Answer Question' :
 
         if st.button('Answer Question'):
             headers = {'Content-Type': 'application/json'}
-            response = requests.post(URL+'/answer', headers=headers,
+            response = requests.post(URL2, headers=headers,
                                      data=json.dumps({'question': question_2, 'context': context_2, 'model': model_2}))
             answer_final = []
             answer_final.append(response.json()['answer'])
@@ -144,7 +146,7 @@ if myrad== 'Answer Question' :
 
             })
             headers = {'Content-Type': 'application/json'}
-            get_models = requests.request('GET', URL+'/answer', headers=headers)
+            get_models = requests.request('GET', URL2, headers=headers)
             res_json = get_models.json()
             model_li = []
 
