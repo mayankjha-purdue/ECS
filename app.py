@@ -4,8 +4,8 @@ import requests
 import pandas as pd
 import os
 
-URL = os.environ['URL']
-
+URL = os.environ.get("URL")
+# URL='https://assignment3-7kfwjamufq-uc.a.run.app'
 st.sidebar.title("Functionalities")
 
 myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Question', 'View Models'))
@@ -13,7 +13,7 @@ myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Q
 if myrad == 'View Models':
     st.title('Existing Models')
     headers = {'Content-Type': 'application/json'}
-    response = requests.request('GET', URL+'/models', headers=headers)
+    response = requests.request('GET', URL+"/models", headers=headers)
     res_json = response.json()
     model= []
     name= []
@@ -45,7 +45,7 @@ if myrad == 'Add Model':
         })
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.request('PUT', URL+'/models', headers=headers, data=payload)
+        response = requests.request('PUT', URL+"/models", headers=headers, data=payload)
         res_json = response.json()
 
         model = []
@@ -73,7 +73,7 @@ if myrad == 'Delete Model':
 
     if st.button('Delete'):
 
-        response = requests.delete(URL+'/models', params={'model': model})
+        response = requests.delete(URL+"/models", params={'model': model})
         res_json = response.json()
         model = []
         name = []
