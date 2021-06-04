@@ -1,6 +1,6 @@
 ## System Architecture Diagram
 
-![Info](https://user-images.githubusercontent.com/20634568/120741664-49687900-c4aa-11eb-8e01-d82be4c16400.PNG)
+![MicrosoftTeams-image (3)](https://user-images.githubusercontent.com/20634568/120746709-99e4d400-c4b4-11eb-8205-879b4d78e19c.png)
 
 # Question-Answering Model
 
