@@ -26,7 +26,18 @@ The objective of this webapp is to display the correct answer to a question aske
   - This functionality can be used to view all the existing models in the database. 
 <img width="939" alt="Screen Shot 2021-06-03 at 8 27 08 PM" src="https://user-images.githubusercontent.com/20634568/120728231-55940c80-c491-11eb-913d-8f9f753f2242.png">
 
-# Installing Docker on mac
+# Run the app using deployed link 
+ - Use the following link to use the app without installing it locally : https://assignment3-7kfwjamufq-uc.a.run.app/
+ 
+# Run the app locally
+## Install dependencies
+- streamlit - https://streamlit.io/
+```
+$ pip install streamlit
+```
+- docker - https://www.docker.com/
+
+### Installing Docker on mac
  
 
 •          Double-click Docker.dmg to open the installer, then drag the Docker icon to the Application folder.
@@ -45,7 +56,7 @@ The objective of this webapp is to display the correct answer to a question aske
 
  
 
-# Creating a Docker File
+### Creating a Docker File
 
 
 - Create a file called Docker File and edit it using vim. Please note that the name of the file has to be "Dockerfile" with "D" as capital.
@@ -57,15 +68,9 @@ FROM ubuntu
 
 MAINTAINER demousr@gmail.com
 
- 
-
 RUN apt-get update
 
- 
-
 RUN apt-get install –y nginx
-
- 
 
 CMD [“echo”,”Image created”]
 ```
@@ -76,59 +81,19 @@ CMD [“echo”,”Image created”]
 
 - The Docker file can be built by the following command
 
- 
 
 Syntax
 
 docker build  -t ImageName:TagName dir
 
- 
 
-Options
-
- 
-
-•          -t − is to mention a tag to the image
-
- 
-
-•          ImageName − This is the name you want to give to your image.
-
- 
-
-•          TagName − This is the tag you want to give to your image.
-
- 
-
-•          Dir − The directory where the Docker File is present.
-
- 
-
-# Adding files to the Docker Container
-
- 
+### Adding files to the Docker Container 
 
 For copying the files from the host to the docker container :
 
- 
-
-1. First, set the path in your localhost to where the file is
-
-   stored.
-
- 
-
-2. Next set the path in your docker container to where you want
-
-   to store the file inside your docker container.
-
- 
-
-3. Then copy the file which you want to store in your docker
-
-   container with the help of CP command.
-
- 
+1. First, set the path in your localhost to where the file is stored.
+2. Next set the path in your docker container to where you want to store the file inside your docker container.
+3. Then copy the file which you want to store in your docker container with the help of CP command.
 
 ex: sudo docker cp /home/(name)/(folder_name)/(file_name)  (container_id):/(to_the_place_you_want_the_file_to_be)
 
