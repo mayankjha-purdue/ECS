@@ -115,7 +115,7 @@ if myrad== 'Answer Question' :
         payload = json.dumps({'question':question_2, 'context':context_2})
         if st.button('Answer Question'):
             headers = {'Content-Type': 'application/json'}
-            response = requests.post(URL2, headers=headers,params ={'model':'distiled-bert'}, data= payload)
+            response = requests.post(URL2, headers=headers,params ={'model':'distilled-bert'}, data= payload)
             answer_final = []
             answer_final.append(response.json()['answer'])
             model_final = []
