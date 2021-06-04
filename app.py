@@ -146,7 +146,7 @@ if myrad== 'Answer Question' :
 
             })
             headers = {'Content-Type': 'application/json'}
-            get_models = requests.request('GET', URL2, headers=headers)
+            get_models = requests.request('GET', URL1, headers=headers)
             res_json = get_models.json()
             model_li = []
 
