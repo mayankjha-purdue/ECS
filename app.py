@@ -112,12 +112,10 @@ if myrad== 'Answer Question' :
 
         question_2 = df2['question'].tolist()[0]
         context_2 = df2['context'].tolist()[0]
-        model_2 = df2['model'].tolist()[0]
-
+        payload = json.dumps({'question':question_2, 'context':context_2})
         if st.button('Answer Question'):
             headers = {'Content-Type': 'application/json'}
-            response = requests.post(URL2, headers=headers,
-                                     data=json.dumps({'question': question_2, 'context': context_2, 'model': model_2}))
+            response = requests.post(URL2, headers=headers,params ={'model':'distiled-bert'}, data= payload)
             answer_final = []
             answer_final.append(response.json()['answer'])
             model_final = []
