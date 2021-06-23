@@ -2,201 +2,61 @@ import streamlit as st
 import json
 import requests
 import pandas as pd
-import os
+import seaborn as sns
+import sqlite3, csv
 
-URL = os.environ.get("URL")
+conn = sqlite3.connect('data.db')
+cur = conn.cursor()
 
-URL1=URL+"/models"
-URL2=URL+"/answer"
-st.sidebar.title("Functionalities")
+cur.execute("CREATE TABLE IF NOT EXISTS responses (eid, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, phqtotal, gadtotal);") # use your column names here
 
-myrad = st.sidebar.radio("Select Action", ('Add Model','Delete Model', 'Answer Question', 'View Models'))
+with open('Data_responses.csv','r') as fin:
+    dr = csv.DictReader(fin)
+    to_db = [(i['Employee_ID'], i['PHQ-9-Q1'], i['PHQ-9-Q2'], i['PHQ-9-Q3'], i['PHQ-9-Q4'], i['PHQ-9-Q5'], i['PHQ-9-Q6'], i['PHQ-9-Q7'], i['PHQ-9-Q8'], i['PHQ-9-Q9'], i['GAD-7-Q1'], i['GAD-7-Q2'], i['GAD-7-Q3'], i['GAD-7-Q4'], i['GAD-7-Q5'], i['GAD-7-Q6'], i['GAD-7-Q7'], i['PHQ_TOTAL'], i['GAD_TOTAL']) for i in dr]
 
-if myrad == 'View Models':
-    st.title('Existing Models')
-    headers = {'Content-Type': 'application/json'}
-    response = requests.request('GET', URL1, headers=headers)
-    res_json = response.json()
-    model= []
-    name= []
-    tokenizer= []
+cur.executemany("INSERT INTO responses (eid, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, phqtotal, gadtotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", to_db)
+conn.commit()
+conn.close()
 
-    for resp in res_json:
-        model.append(resp['model'])
-        tokenizer.append(resp['tokenizer'])
-        name.append(resp['name'])
 
-    # using data frame
-    df = pd.DataFrame({'model': model,
-                       'name': name,
-                       'tokenizer': tokenizer})
-    st.write(df)
+st.sidebar.title("Mental Health Help")
 
-if myrad == 'Add Model':
-    st.title('Input a Model')
-    model = st.text_input('Model')
-    name = st.text_input('Name')
-    tokenizer = st.text_input('Tokenizer')
+myrad = st.sidebar.radio("", ('My Profile', 'Company statistics', 'Take Survey', 'Schedule Appointment', 'Advanced Survey', 'Self Help', 'Settings'))
 
-    if st.button('Insert'):
+if myrad == 'My Profile':
+    st.title('My profile')
 
-        payload = json.dumps({
-            'model': model,
-            'name': name,
-            'tokenizer': tokenizer
-        })
+if myrad == 'Take Survey':
+    st.title('Survey')
+    q1 = st.radio("Little interest or pleasure in doing things", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q2 = st.radio("Feeling down, depressed, or hopeless", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q3 = st.radio("Trouble falling or staying asleep, or sleeping too much", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q4 = st.radio("Feeling tired or having little energy", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q5 = st.radio("Poor appetite or overeating", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q6 = st.radio("Feeling bad about yourself — or that you are a failure or have let yourself or your family down", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q7 = st.radio("Trouble concentrating on things, such as reading the newspaper or watching television", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q8 = st.radio("Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q9 = st.radio("Feeling nervous, anxious or on edge", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q10 = st.radio("Not being able to stop or control worrying", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q11 = st.radio("Worrying too much about different things", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q12 = st.radio("Trouble relaxing", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q13 = st.radio("Being so restless that it is hard to sit still", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q14 = st.radio("Becoming easily annoyed or irritable", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q15 = st.radio("Feeling afraid as if something awful might happen", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
+    q16 = st.radio("Thoughts that you would be better off dead or of hurting yourself in some way", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
 
-        headers = {'Content-Type': 'application/json'}
-        response = requests.request('PUT', URL1, headers=headers, data=payload)
-        res_json = response.json()
+#
+if myrad == 'Company Statistics':
+    st.title('Statistics')
+    df = pd.read_csv('Data_responses.csv')
+    s1 = pd.Series(df['PHQ_TOTAL'])
+    s2 = pd.Series(df['GAD_TOTAL'])
+    t1=s1.sum()
+    t2 = s2.sum()
+    data = [['PHQ_TOTAL', t1], ['GAD_TOTAL', t2]]
 
-        model = []
-        name = []
-        tokenizer = []
+    df1 = pd.DataFrame(data, columns=['PHQ_TOTAL', 'GAD_TOTAL'])
+    df1.head()
+    st.bar_chart(df1)
+# if myrad== 'Answer Question' :
 
-        for resp in res_json:
-            model.append(resp['model'])
-            tokenizer.append(resp['tokenizer'])
-            name.append(resp['name'])
-
-        # using data frame
-        df = pd.DataFrame({'model': model,
-                           'name': name,
-                           'tokenizer': tokenizer})
-
-        st.write('Model added Successfully')
-        st.write(df)
-
-if myrad == 'Delete Model':
-    st.title('Delete a Model')
-
-    model = st.text_input('Name')
-    model2 = str(model)
-
-    if st.button('Delete'):
-
-        response = requests.delete(URL1, params={'model': model})
-        res_json = response.json()
-        model = []
-        name = []
-        tokenizer = []
-
-        for resp in res_json:
-            model.append(resp['model'])
-            tokenizer.append(resp['tokenizer'])
-            name.append(resp['name'])
-
-        # using data frame
-        df = pd.DataFrame({'model': model,
-                           'name': name,
-                           'tokenizer': tokenizer})
-
-        st.write('Model Deleted Successfully')
-
-        st.write(df)
-
-if myrad== 'Answer Question' :
-
-    st.title('Upload/Question-Answering API')
-
-    question = st.text_input('Question')
-    context = st.text_input('Context')
-    model3 = st.text_input('Model')
-
-    datafile = st.file_uploader("Upload CSV", type=['csv'])
-    if datafile is not None:
-        file_details = {"FileName": datafile.name, "FileType": datafile.type}
-
-        df2 = pd.read_csv(datafile)
-        # st.dataframe(df)
-
-        question_2 = df2['question'].tolist()[0]
-        context_2 = df2['context'].tolist()[0]
-        payload = json.dumps({'question':question_2, 'context':context_2})
-        if st.button('Answer Question'):
-            headers = {'Content-Type': 'application/json'}
-            response = requests.post(URL2, headers=headers,params ={'model':'distilled-bert'}, data= payload)
-            answer_final = []
-            answer_final.append(response.json()['answer'])
-            model_final = []
-            model_final.append(response.json()['model'])
-            question_final = []
-            question_final.append(response.json()['question'])
-            context_final = []
-            context_final.append(response.json()['context'])
-
-            df3 = pd.DataFrame()
-            df3['answer'] = answer_final
-            df3['model'] = model_final
-            df3['question'] = question_final
-            df3['context'] = context_final
-            df3['sno'] = 1
-
-            st.write(df3)
-
-    else:
-
-        if st.button('Answer Question'):
-
-            payload = json.dumps({
-                'question': question,
-                'context': context
-
-            })
-            headers = {'Content-Type': 'application/json'}
-            get_models = requests.request('GET', URL1, headers=headers)
-            res_json = get_models.json()
-            model_li = []
-
-            for i in res_json:
-                model_temp = i['name']
-                model_li.append(model_temp)
-
-            if not model3:
-                model2 = 'distilled-bert'
-
-                response = requests.post(URL2, headers=headers, params={'model': model2}, data=payload)
-
-                answer_final = []
-                answer_final.append(response.json()['answer'])
-                model_final = []
-                model_final.append(response.json()['model'])
-                question_final = []
-                question_final.append(response.json()['question'])
-                context_final = []
-                context_final.append(response.json()['context'])
-
-                df = pd.DataFrame()
-                df['answer'] = answer_final
-                df['model'] = model_final
-                df['question'] = question_final
-                df['context'] = context_final
-                df['sno'] = 1
-
-                st.write(df)
-
-            else:
-                payload = json.dumps({
-                    'question': question,
-                    'context': context})
-
-                headers = {'Content-Type': 'application/json'}
-                response = requests.post(URL+'/answer', headers=headers, params={'model': model3}, data=payload)
-
-                answer_final = []
-                answer_final.append(response.json()['answer'])
-                model_final = []
-                model_final.append(response.json()['model'])
-                question_final = []
-                question_final.append(response.json()['question'])
-                context_final = []
-                context_final.append(response.json()['context'])
-
-                df = pd.DataFrame()
-                df['answer'] = answer_final
-                df['model'] = model_final
-                df['question'] = question_final
-                df['context'] = context_final
-                df['sno'] = 1
-
-                st.write(df)
