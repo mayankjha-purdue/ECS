@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import seaborn as sns
 import sqlite3, csv
+import matplotlib.pyplot as plt
 
 conn = sqlite3.connect('data.db')
 cur = conn.cursor()
@@ -25,6 +26,14 @@ myrad = st.sidebar.radio("", ('My Profile', 'Company statistics', 'Take Survey',
 
 if myrad == 'My Profile':
     st.title('My profile')
+    st.markdown(""" <style> .big-font { font-size:30px !important; } </style> """, unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Hello Merry Foi</p>', unsafe_allow_html=True)
+    st.markdown('Employee_ID: E1')
+    st.markdown('Gender: Female')
+    st.markdown('Date of Birth: 05/24/1982')
+    st.markdown('Designation: Level 1')
+    st.markdown('Manager_ID: E7')
+    st.markdown('Zip_Code: 83433')
 
 if myrad == 'Take Survey':
     st.title('Survey')
@@ -45,18 +54,31 @@ if myrad == 'Take Survey':
     q15 = st.radio("Feeling afraid as if something awful might happen", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
     q16 = st.radio("Thoughts that you would be better off dead or of hurting yourself in some way", ('Not at all', 'Several days', 'More than half the days', 'Nearly every day'))
 
-#
-if myrad == 'Company Statistics':
+if myrad == 'Company statistics':
     st.title('Statistics')
+    import pandas as pd
     df = pd.read_csv('Data_responses.csv')
     s1 = pd.Series(df['PHQ_TOTAL'])
     s2 = pd.Series(df['GAD_TOTAL'])
     t1=s1.sum()
     t2 = s2.sum()
-    data = [['PHQ_TOTAL', t1], ['GAD_TOTAL', t2]]
-
-    df1 = pd.DataFrame(data, columns=['PHQ_TOTAL', 'GAD_TOTAL'])
+    df1=[]
+    df1 = pd.DataFrame(columns=['PHQ_TOTAL', 'GAD_TOTAL'], data=[[t1,t2]])
     df1.head()
+    # df1.hist()
+    # plt.show()
+    # st.pyplot()
     st.bar_chart(df1)
 # if myrad== 'Answer Question' :
+
+if myrad == 'Self Help':
+    st.write("[Things to try on your own](https://screening.mhanational.org/diy/)")
+    st.write("[Connect with others](https://screening.mhanational.org/connect/)")
+    st.write("[Find a provider](https://screening.mhanational.org/get-help/)")
+    st.write("[Learn about treatments](https://screening.mhanational.org/treatment/)")
+
+
+
+
+
 
