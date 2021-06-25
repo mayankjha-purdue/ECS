@@ -149,5 +149,5 @@ if myrad == 'Advanced Survey':
     st.markdown(text)
 
     if st.button("Talk To MAX"):
-        url = 'http://maxthechatbot.herokuapp.com/'
+        url = 'http://www.corticare.online/'
         webbrowser.open_new_tab(url)
